@@ -61,13 +61,13 @@ We want to have most python standard library wrapped into a nodes!
 Latest development version. Contains latest features
 
 ```bash
-pip install git+https://github.com/wonderworks-software/PyFlow.git@master
+pip install git+https://github.com/pedroCabrera/PyFlow.git@master
 ```
 
 Latest release version
 
 ```bash
-pip install git+https://github.com/wonderworks-software/PyFlow.git@release
+pip install git+https://github.com/pedroCabrera/PyFlow.git@release
 ```
 
 After package is installed, you can invoke `pyflow.exe` on windows or `pyflow` on unix OS.
