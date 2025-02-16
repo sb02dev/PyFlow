@@ -56,7 +56,7 @@ class IOLib(FunctionLibraryBase):
                      error_msg=(REF, ('StringPin', ""))):
         err_msg = ""
         try:
-             with codecs.open(file, encoding) as f:
+             with codecs.open(file, encoding=encoding) as f:
                 all_lines = list(f.readlines())
         except Exception as e:
             err_msg = str(e)
