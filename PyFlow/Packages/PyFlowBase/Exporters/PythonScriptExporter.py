@@ -87,7 +87,7 @@ class PythonScriptExporter(IDataExporter):
 
     @staticmethod
     def createImporterMenu():
-        return False
+        return True
 
     @staticmethod
     def creationDateString():
@@ -122,7 +122,7 @@ class PythonScriptExporter(IDataExporter):
                     pyFlowInstance.newFile()
                     ROOT_GRAPH = pyFlowInstance.graphManager.get().findRootGraph()
                     mem["createScene"](ROOT_GRAPH)
-                    pyFlowInstance.afterLoad()
+                    pyFlowInstance.fileBeenLoaded.emit()
 
     @staticmethod
     def doExport(pyFlowInstance):
@@ -137,6 +137,8 @@ class PythonScriptExporter(IDataExporter):
         script += "#\tCreated: {0}\n\n".format(
             PythonScriptExporter.creationDateString()
         )
+        script += "from PyFlow import getRawNodeInstance\n\n"
+        
         script += "EXPORTER_NAME = '{}'\n".format(PythonScriptExporter.displayName())
         script += "EXPORTER_VERSION = '{}'\n\n".format(
             str(PythonScriptExporter.version())
@@ -159,13 +161,12 @@ class PythonScriptExporter(IDataExporter):
             graphScript += "\n# connect pins\n"
 
             # create connections
-            # for node in rootGraph.getNodesList():
-            #     for outPin in node.outputs.values():
-            #         for inPinName in outPin.linkedTo:
-            #             inPin = pyFlowInstance.graphManager.get().findPinByName(inPinName)
-            #             graphScript += "{0} = ROOT_GRAPH.graphManager.findPinByName('{1}')\n".format(outPin.getFullName(), outPin.getFullName())
-            #             graphScript += "{0} = ROOT_GRAPH.graphManager.findPinByName('{1}')\n".format(inPin.getFullName(), inPin.getFullName())
-            #             graphScript += "connectPins({0}, {1})\n".format(outPin.getFullName(), inPin.getFullName())
+            for node in rootGraph.getNodesList():
+                for outPin in node.outputs.values():
+                    for inPin in getConnectedPins(outPin):
+                        graphScript += "{0} = ROOT_GRAPH.graphManager.findPinByName('{1}')\n".format(outPin.getFullName(), outPin.getFullName())
+                        graphScript += "{0} = ROOT_GRAPH.graphManager.findPinByName('{1}')\n".format(inPin.getFullName(), inPin.getFullName())
+                        graphScript += "connectPins({0}, {1})\n".format(outPin.getFullName(), inPin.getFullName())
 
             wrappedGraphScript = wrapStringToFunctionDef(
                 "createScene", graphScript, {"ROOT_GRAPH": None}

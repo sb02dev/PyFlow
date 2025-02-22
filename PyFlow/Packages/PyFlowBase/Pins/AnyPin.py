@@ -126,6 +126,10 @@ class AnyPin(PinBase):
             self.super = AnyPin
         self.updateError([])
 
+    def setData(self, data):
+        self.setTypeFromData(data)
+        return super().setData(data)
+    
     def setTypeFromData(self, data):
         """Initialize DataType from actual data
 

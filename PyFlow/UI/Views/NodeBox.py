@@ -430,7 +430,7 @@ class NodeBoxTreeWidget(QTreeWidget):
                 category.setBackground(
                     0, editableStyleSheet().BgColorBright.lighter(150)
                 )
-        super(NodeBoxTreeWidget, self).update()
+        #super(NodeBoxTreeWidget, self).update()
 
 
 class NodeBoxSizeGrip(QSizeGrip):
