@@ -44,9 +44,16 @@ class KeyboardModifiersCaptureWidget(QPushButton):
 
     @staticmethod
     def modifiersToString(modifiers):
-        if modifiers == QtCore.Qt.KeyboardModifier.NoModifier:
-            return "NoModifier"
-        return QtGui.QKeySequence(modifiers).toString()[:-2]
+        modifier_list = []
+        if modifiers & QtCore.Qt.ShiftModifier:
+            modifier_list.append("Shift")
+        if modifiers & QtCore.Qt.ControlModifier:
+            modifier_list.append("Control")
+        if modifiers & QtCore.Qt.AltModifier:
+            modifier_list.append("Alt")
+        if modifiers & QtCore.Qt.MetaModifier:
+            modifier_list.append("Meta")
+        return " + ".join(modifier_list) if modifier_list else "No Modifier"
 
     def mousePressEvent(self, event):
         if event.button() == QtCore.Qt.MouseButton.LeftButton:
