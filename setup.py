@@ -14,14 +14,14 @@ setup(
     entry_points={"console_scripts": ["pyflow = PyFlow.Scripts:main"]},
     include_package_data=True,
     author="Ilgar Lunin, Pedro Cabrera",
-    author_email="wonderworks.software@gmail.com",
+    author_email="pedro.c.vfx@gmail.com",
     description="A general purpose runtime extendable python qt node editor.",
     keywords="visual programming framework",
-    url="https://wonderworks-software.github.io/PyFlow",  # project home page
+    url="https://pedrocabrera.github.io/PyFlow/",  # project home page
     project_urls={
-        "Bug Tracker": "https://github.com/wonderworks-software/PyFlow/issues",
+        "Bug Tracker": "https://github.com/pedrocabrera/PyFlow/issues",
         "Documentation": "https://pyflow.readthedocs.io",
-        "Source Code": "https://github.com/wonderworks-software/PyFlow",
+        "Source Code": "https://github.com/pedrocabrera/PyFlow",
     },
     classifiers=["License :: Appache-2.0"],
     install_requires=[

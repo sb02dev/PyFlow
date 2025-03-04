@@ -904,7 +904,7 @@ class MDIMain(QMainWindow):
         self.windowMenu.aboutToShow.connect(self.updateWindowMenu)
 
         helpMenu = self.menuBar.addMenu("Help")
-        helpMenu.addAction("Homepage").triggered.connect(lambda _=False, url="https://wonderworks-software.github.io/PyFlow/": QtGui.QDesktopServices.openUrl(url))
+        helpMenu.addAction("Homepage").triggered.connect(lambda _=False, url="https://pedrocabrera.github.io/PyFlow/": QtGui.QDesktopServices.openUrl(url))
         helpMenu.addAction("Docs").triggered.connect(lambda _=False, url="https://pyflow.readthedocs.io/en/latest/": QtGui.QDesktopServices.openUrl(url))
 
     def populateToolBar(self):

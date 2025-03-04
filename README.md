@@ -264,7 +264,7 @@ We use a [semantic versioning](http://semver.org/) policy.
 * **Ilgar Lunin** - [Ilgar Lunin](https://github.com/IlgarLunin)
 * **Pedro Cabrera** - [Pedro Cabrera](https://github.com/pedroCabrera)
 
-See also the list of [contributors](https://github.com/wonderworks-software/PyFlow/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/pedrocabrera/PyFlow/contributors) who participated in this project.
 
 ## Discussion
 

@@ -231,7 +231,7 @@ class PyFlow(QMainWindow):
 
         helpMenu = self.menuBar.addMenu("Help")
         helpMenu.addAction("Homepage").triggered.connect(
-            lambda _=False, url="https://wonderworks-software.github.io/PyFlow/": QtGui.QDesktopServices.openUrl(
+            lambda _=False, url="https://pedrocabrera.github.io/PyFlow/": QtGui.QDesktopServices.openUrl(
                 url
             )
         )
