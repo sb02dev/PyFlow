@@ -24,7 +24,7 @@ from PyFlow.UI.Utils.stylesheet import editableStyleSheet
 from PyFlow.UI.Utils.stylesheet import Colors
 
 InvalidNodePenColor = Colors.Red
-ExposedPropertiesColor = Colors.NodeNameRectBlue
+ExposedPropertiesColor = Colors.Yellow
 
 
 # Determines how to paint the node
@@ -170,12 +170,9 @@ class NodePainter(object):
         pen = QtGui.QPen(QtCore.Qt.black, 0.5)
         painter.setPen(QtCore.Qt.NoPen)
 
-        r = frame
+        r = frame.marginsRemoved(QtCore.QMarginsF(3,3, 3, 3))  
         if lod < SWITCH_LOD:
-            r.setWidth(r.width() - pen.width() / 2)
-            r.setHeight(r.height() - pen.width() / 2)
-            r.setX(pen.width() / 2)
-            r.setY(r.y() + pen.width() / 2)
+
             painter.drawRoundedRect(r, node.roundness, node.roundness)
         else:
             painter.drawRect(r)
@@ -189,17 +186,14 @@ class NodePainter(object):
             if node.isTemp:
                 headColor = headColor.lighter(50)
                 headColor.setAlpha(50)
-            if lod < SWITCH_LOD:
-                b = QtGui.QLinearGradient(0, 0, lr.width(), 0)
-                b.setColorAt(0, headColor.lighter(60))
-                b.setColorAt(0.5, headColor)
-                b.setColorAt(1, headColor.darker(50))
+            if lod < SWITCH_LOD:               
                 path = QtGui.QPainterPath()
                 path.setFillRule(QtCore.Qt.WindingFill)
                 path.addRoundedRect(lr, node.roundness, node.roundness)
                 lr.setY(lr.y() + node.roundness)
-                path.addRect(lr)
-                painter.fillPath(path, b)
+                if not node.collapsed:
+                    path.addRect(lr)
+                painter.fillPath(path, headColor)
             else:
                 painter.fillRect(lr, headColor)
 
@@ -208,20 +202,11 @@ class NodePainter(object):
             and node._rawNode.bCacheEnabled
             or node._rawNode.__class__.__name__ == "graphOutputs"
         ):
-            NodePainter.drawState(node, painter, pen, lod, SWITCH_LOD, r)
+            NodePainter.setPenColor(node, painter, pen)
 
         if not node.isValid():
             pen.setColor(InvalidNodePenColor)
             pen.setStyle(node.optPenErrorType)
-            pen.setWidth(pen.width() * 1.5)
-        elif not node.bExposeInputsToCompound:
-            if option.state & QStyle.State_Selected:
-                pen.setColor(editableStyleSheet().MainColor)
-                pen.setStyle(node.optPenSelectedType)
-                pen.setWidth(pen.width() * 1.5)
-        else:
-            pen.setColor(ExposedPropertiesColor)
-            pen.setStyle(node.optPenSelectedType)
             pen.setWidth(pen.width() * 1.5)
 
         painter.setPen(pen)
@@ -230,45 +215,54 @@ class NodePainter(object):
             painter.drawRoundedRect(r, node.roundness, node.roundness)
         else:
             painter.drawRect(r)
-
+        
+        if node.bExposeInputsToCompound:
+            painter.setFont(QtGui.QFont("Arial", 4))
+            pen.setColor(ExposedPropertiesColor)
+            painter.setPen(pen)
+            rtext = frame.marginsRemoved(QtCore.QMarginsF(5,5, 5, 5))
+            painter.drawText(rtext, QtCore.Qt.AlignRight | QtCore.Qt.AlignBottom, "exposing to compound")       
+        
+        NodePainter.drawSelected(node, painter, pen, option, lod, SWITCH_LOD, frame)
         NodePainter.drawResizeHandles(node, painter, option, widget)
         NodePainter.drawGroups(node, painter, option, widget)
         NodePainter.drawDeprecated(node, painter, option, widget)
         NodePainter.drawExperimental(node, painter, option, widget)
+    
+    @staticmethod
+    def drawSelected(node, painter, pen, option, lod, SWITCH_LOD, r):
+        prevWidth = pen.width()
+        if option.state & QStyle.State_Selected:
+            pen.setColor(editableStyleSheet().MainColor)
+            pen.setStyle(node.optPenSelectedType)
+            pen.setWidth(pen.width() * 1.5)
+            painter.setPen(pen)
+            painter.setBrush(QtGui.QColor(0, 0, 0, 0))
+            #rect = r.marginsAdded(QtCore.QMarginsF(5, 5, 5, 5))
+            if lod < SWITCH_LOD:
+                painter.drawRoundedRect(r, node.roundness*1.5, node.roundness*1.5)
+            else:
+                painter.drawRect(r)
+        pen.setWidth(prevWidth)
+
 
     @staticmethod
-    def drawState(node, painter, pen, lod, SWITCH_LOD, r):
+    def setPenColor(node, painter, pen):
         prevWidth = pen.width()
-        paint = False
         if node.computing:
             pen.setColor(Colors.Yellow)
             pen.setStyle(node.optPenSelectedType)
-            pen.setWidth(prevWidth * 2)
-            paint = True
-        else:
-            if node._rawNode.isDirty():
-                pen.setColor(Colors.Orange)
-                pen.setStyle(node.optPenSelectedType)
-                pen.setWidth(prevWidth * 2)
-                paint = True
-            else:
-                pen.setColor(Colors.Green)
-                pen.setStyle(node.optPenSelectedType)
-                pen.setWidth(prevWidth * 2)
-                paint = True
+            pen.setWidth(prevWidth * 1.5)
 
-        if paint and node.isValid():
-            painter.setPen(pen)
-            painter.setBrush(QtGui.QColor(0, 0, 0, 0))
-            rect = QtCore.QRectF(r)
-            if lod < SWITCH_LOD:
-                rect.setWidth(rect.width() - pen.width() / 2)
-                rect.setHeight(rect.height() - pen.width() / 2)
-                rect.setX(pen.width() / 2)
-                rect.setY(rect.y() + pen.width() / 2)
-                painter.drawRoundedRect(rect, node.roundness, node.roundness)
-            else:
-                painter.drawRect(r)
+        elif node._rawNode.isDirty():
+            pen.setColor(Colors.Orange)
+            pen.setStyle(node.optPenSelectedType)
+
+        else:
+            pen.setColor(Colors.Green)
+            pen.setStyle(node.optPenSelectedType)
+
+        painter.setPen(pen)
         pen.setWidth(prevWidth)
 
     @staticmethod

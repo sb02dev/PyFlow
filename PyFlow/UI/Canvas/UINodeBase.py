@@ -335,7 +335,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         self.headerLayout.setMaximumHeight(self.labelHeight)
 
         self.exposedActionButtonsLayout = QGraphicsLinearLayout(QtCore.Qt.Horizontal)
-        self.exposedActionButtonsLayout.setContentsMargins(0, 0, 0, 0)
+        self.exposedActionButtonsLayout.setContentsMargins(0, 5, 0, 0)
         self.exposedActionButtonsLayout.setSpacing(2)
         self.exposedActionButtonsLayout.setSizePolicy(
             QSizePolicy.Maximum, QSizePolicy.Maximum
@@ -388,7 +388,6 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         # Resizing Options
         self.initialRectWidth = self.minWidth
         self.initialRectHeight = self.minHeight
-        self.expanded = True
         self.resizable = False
         self.bResize = False
         self.resizeDirection = (0, 0)
@@ -1258,7 +1257,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         self.origPos = self.pos()
         self.initPos = self.pos()
         self.initialRect = self.boundingRect()
-        if self.expanded and self.resizable:
+        if not self.collapsed and self.resizable:
             resizeOpts = self.shouldResize(self.mapToScene(event.pos()))
             if resizeOpts["resize"]:
                 self.resizeDirection = resizeOpts["direction"]
