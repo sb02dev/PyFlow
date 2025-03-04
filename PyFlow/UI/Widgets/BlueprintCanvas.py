@@ -994,13 +994,7 @@ class BlueprintCanvas(CanvasBase):
                     self._lastPanPoint = self.mapToScene(event.pos())
                 elif currentInputAction in InputManager()["Canvas.Zoom"]:
                     self.manipulationMode = CanvasManipulationMode.ZOOM
-                    self._lastTransform = QtGui.QTransform(self.transform())
-                    self._lastSceneRect = self.sceneRect()
-                    self._lastSceneCenter = self._lastSceneRect.center()
-                    self._lastScenePos = self.mapToScene(event.pos())
-                    self._lastOffsetFromSceneCenter = (
-                        self._lastScenePos - self._lastSceneCenter
-                    )
+
             self.node_box.hide()
         else:
             if (
@@ -1393,11 +1387,17 @@ class BlueprintCanvas(CanvasBase):
         elif self.manipulationMode == CanvasManipulationMode.PAN:
             self.pan(mouseDelta)
         elif self.manipulationMode == CanvasManipulationMode.ZOOM:
-            if mouseDelta.x() > 0:
-                zoomFactor = 1.0 + mouseDelta.x() / 100.0
+            if mouseDelta.x() - mouseDelta.y() > 0:
+                zoomFactor = 1.0 + (mouseDelta.x()- mouseDelta.y()) / 100.0
             else:
-                zoomFactor = 1.0 / (1.0 + abs(mouseDelta.x()) / 100.0)
+                zoomFactor = 1.0 / (1.0 + abs(mouseDelta.x()- mouseDelta.y()) / 100.0)
+
+            scene_pos = self.mapToScene(event.pos())
             self.zoom(zoomFactor)
+            new_pos = self.mapFromScene(scene_pos)
+            delta = new_pos - event.pos()
+            self.pan(-delta)
+
         elif self.manipulationMode == CanvasManipulationMode.COPY:
             delta = self.mousePos - self.mousePressPose
             if delta.manhattanLength() > 15:

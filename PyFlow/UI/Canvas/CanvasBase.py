@@ -92,9 +92,14 @@ class CanvasBase(QGraphicsView):
             self.viewport().setCursor(QtCore.Qt.ArrowCursor)
 
     def wheelEvent(self, event):
+        scene_pos = self.mapToScene(self.mapFromGlobal(QtGui.QCursor.pos()))
+     
         zoomFactor = 1.0 + event.angleDelta().y() * self._mouseWheelZoomRate
-
         self.zoom(zoomFactor)
+
+        new_pos = self.mapFromScene(scene_pos)
+        delta = new_pos - self.mapFromGlobal(QtGui.QCursor.pos())
+        self.pan(-delta)           
 
     def zoom(self, scale_factor):
         self.factor = self.transform().m22()
