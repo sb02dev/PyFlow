@@ -801,14 +801,14 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         except:
             return 0
 
-    def getNodeWidth(self):
+    def getNodeWidth(self,minimum=False):
         width = self.getPinsWidth() + self.pinsLayout.spacing() * 2
-        if self.resizable:
+        if not minimum and self.resizable:
             width = max(self._rect.width(), width)
         width = max(width, self.labelWidth)
         return width
-
-    def getNodeHeight(self):
+    
+    def getNodeHeight(self,minimum=False):
         h = self.nodeNameWidget.sizeHint(None, None).height()
         h += self.nodeLayout.spacing()
         try:
@@ -862,7 +862,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
         if h < self.minHeight:
             h = self.minHeight
 
-        if self.resizable:
+        if not minimum and self.resizable:
             h = max(self._rect.height(), h)
 
         if self.collapsed:
@@ -1275,7 +1275,7 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
                 posdelta = self.mapToScene(event.pos()) - self.origPos
                 posdelta2 = self.mapToScene(event.pos()) - self.initPos
                 newWidth = -posdelta2.x() + self.initialRectWidth
-                if newWidth > self.minWidth:
+                if newWidth > self.getNodeWidth(minimum=True):
                     self.translate(posdelta.x(), 0)
                     self.origPos = self.pos()
                     self._rect.setWidth(newWidth)
@@ -1284,40 +1284,40 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
                 posdelta = self.mapToScene(event.pos()) - self.origPos
                 posdelta2 = self.mapToScene(event.pos()) - self.initPos
                 minHeight = -posdelta2.y() + self.initialRectHeight
-                if minHeight > self.minHeight:
+                if minHeight > self.getNodeHeight(minimum=True):
                     self.translate(0, posdelta.y())
                     self.origPos = self.pos()
                     self._rect.setHeight(minHeight)
                     self.updateNodeShape()
             elif self.resizeDirection == (1, 0):  # right
                 newWidth = delta.x() + self.initialRectWidth
-                if newWidth > self.minWidth:
+                if newWidth > self.getNodeWidth(minimum=True):
                     self._rect.setWidth(newWidth)
                     self.w = newWidth
                     self.updateNodeShape()
             elif self.resizeDirection == (0, 1):  # bottom
                 newHeight = delta.y() + self.initialRectHeight
-                if newHeight > self.minHeight:
+                if newHeight > self.getNodeHeight(minimum=True):
                     self._rect.setHeight(newHeight)
                     self.updateNodeShape()
             elif self.resizeDirection == (1, 1):  # bottom right
                 newWidth = delta.x() + self.initialRectWidth
                 newHeight = delta.y() + self.initialRectHeight
-                if newWidth > self.minWidth:
+                if newWidth > self.getNodeWidth(minimum=True):
                     self._rect.setWidth(newWidth)
                     self.w = newWidth
                     self.updateNodeShape()
-                if newHeight > self.minHeight:
+                if newHeight > self.getNodeHeight(minimum=True):
                     self._rect.setHeight(newHeight)
                     self.updateNodeShape()
             elif self.resizeDirection == (-1, 1):  # bottom left
                 newHeight = delta.y() + self.initialRectHeight
-                if newHeight > self.minHeight:
+                if newHeight > self.getNodeHeight(minimum=True):
                     self._rect.setHeight(newHeight)
                 posdelta = self.mapToScene(event.pos()) - self.origPos
                 posdelta2 = self.mapToScene(event.pos()) - self.initPos
                 newWidth = -posdelta2.x() + self.initialRectWidth
-                if newWidth > self.minWidth:
+                if newWidth > self.getNodeWidth(minimum=True):
                     self.translate(posdelta.x(), 0)
                     self.origPos = self.pos()
                     self._rect.setWidth(newWidth)
@@ -1326,12 +1326,12 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
                 posdelta = self.mapToScene(event.pos()) - self.origPos
                 posdelta2 = self.mapToScene(event.pos()) - self.initPos
                 minHeight = -posdelta2.y() + self.initialRectHeight
-                if minHeight > self.minHeight:
+                if minHeight > self.getNodeHeight(minimum=True):
                     self.translate(0, posdelta.y())
                     self.origPos = self.pos()
                     self._rect.setHeight(minHeight)
                 newWidth = -posdelta2.x() + self.initialRectWidth
-                if newWidth > self.minWidth:
+                if newWidth > self.getNodeWidth(minimum=True):
                     self.translate(posdelta.x(), 0)
                     self.origPos = self.pos()
                     self._rect.setWidth(newWidth)
@@ -1340,12 +1340,12 @@ class UINodeBase(QGraphicsWidget, IPropertiesViewSupport, IUINode):
                 posdelta = self.mapToScene(event.pos()) - self.origPos
                 posdelta2 = self.mapToScene(event.pos()) - self.initPos
                 minHeight = -posdelta2.y() + self.initialRectHeight
-                if minHeight > self.minHeight:
+                if minHeight > self.getNodeHeight(minimum=True):
                     self.translate(0, posdelta.y())
                     self.origPos = self.pos()
                     self._rect.setHeight(minHeight)
                 newWidth = delta.x() + self.initialRectWidth
-                if newWidth > self.minWidth:
+                if newWidth > self.getNodeWidth(minimum=True):
                     self._rect.setWidth(newWidth)
                     self.w = newWidth
                 self.updateNodeShape()
