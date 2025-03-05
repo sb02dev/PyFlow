@@ -158,6 +158,9 @@ def getRawNodeInstance(nodeClassName, packageName=None, libName=None, **kwargs):
 
 
 def INITIALIZE(additionalPackageLocations=None, software=""):
+    __PACKAGES.clear()
+    __PACKAGE_PATHS.clear()
+    __HASHABLE_TYPES.clear()
     if additionalPackageLocations is None:
         additionalPackageLocations = []
     from PyFlow.UI.Tool import REGISTER_TOOL
@@ -211,6 +214,7 @@ def INITIALIZE(additionalPackageLocations=None, software=""):
     for importer, modname, ispkg in pkgutil.iter_modules(packagePaths):
         try:
             if ispkg:
+                print("Loading package: {0}".format(modname))
                 mod = importer.find_spec(modname).loader.load_module()
                 package = getattr(mod, modname)()
                 __PACKAGES[modname] = package
@@ -234,8 +238,8 @@ def INITIALIZE(additionalPackageLocations=None, software=""):
                 internalType = pin.internalDataStructure()
                 if internalType in registeredInternalPinDataTypes:
                     raise Exception(
-                        "Pin with {0} internal data type already been registered".format(
-                            internalType
+                        "Pin from package {0} with {0} internal data type already been registered".format(
+                            packageName,internalType
                         )
                     )
                 registeredInternalPinDataTypes.add(internalType)

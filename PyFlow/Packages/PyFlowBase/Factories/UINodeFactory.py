@@ -1,4 +1,4 @@
-## Copyright 2015-2019 Ilgar Lunin, Pedro Cabrera
+## Copyright 2015-2025 Ilgar Lunin, Pedro Cabrera
 
 ## Licensed under the Apache License, Version 2.0 (the "License");
 ## you may not use this file except in compliance with the License.
@@ -13,32 +13,6 @@
 ## limitations under the License.
 
 
-from PyFlow.Packages.PyFlowBase.Nodes.storeArgs import storeArgs
-from PyFlow.Packages.PyFlowBase.Nodes.combineArgs import combineArgs
-from PyFlow.Packages.PyFlowBase.Nodes.subProcess import subProcess
-from PyFlow.Packages.PyFlowBase.Nodes.switch import switch
-from PyFlow.Packages.PyFlowBase.Nodes.getVar import getVar
-from PyFlow.Packages.PyFlowBase.Nodes.setVar import setVar
-from PyFlow.Packages.PyFlowBase.Nodes.sequence import sequence
-from PyFlow.Packages.PyFlowBase.Nodes.pythonNode import pythonNode
-from PyFlow.Packages.PyFlowBase.Nodes.commentNode import commentNode
-from PyFlow.Packages.PyFlowBase.Nodes.stickyNote import stickyNote
-from PyFlow.Packages.PyFlowBase.Nodes.reroute import reroute
-from PyFlow.Packages.PyFlowBase.Nodes.rerouteExecs import rerouteExecs
-from PyFlow.Packages.PyFlowBase.Nodes.graphNodes import graphInputs, graphOutputs
-from PyFlow.Packages.PyFlowBase.Nodes.floatRamp import floatRamp
-from PyFlow.Packages.PyFlowBase.Nodes.colorRamp import colorRamp
-
-from PyFlow.Packages.PyFlowBase.Nodes.compound import compound
-from PyFlow.Packages.PyFlowBase.Nodes.constant import constant
-from PyFlow.Packages.PyFlowBase.Nodes.convertTo import convertTo
-from PyFlow.Packages.PyFlowBase.Nodes.makeDict import makeDict
-from PyFlow.Packages.PyFlowBase.Nodes.makeAnyDict import makeAnyDict
-
-from PyFlow.Packages.PyFlowBase.Nodes.forLoopBegin import forLoopBegin
-from PyFlow.Packages.PyFlowBase.Nodes.whileLoopBegin import whileLoopBegin
-
-from PyFlow.Packages.PyFlowBase.Nodes.imageDisplay import imageDisplay
 from PyFlow.Packages.PyFlowBase.UI.UIImageDisplayNode import UIImageDisplayNode
 
 from PyFlow.Packages.PyFlowBase.UI.UIStoreArgsNode import UIStoreArgs
@@ -65,52 +39,51 @@ from PyFlow.Packages.PyFlowBase.UI.UIWhileLoopBeginNode import UIWhileLoopBeginN
 
 from PyFlow.UI.Canvas.UINodeBase import UINodeBase
 
-
 def createUINode(raw_instance):
-    if isinstance(raw_instance, getVar):
+    if raw_instance.__class__.__name__ == "getVar":
         return UIGetVarNode(raw_instance)
-    if isinstance(raw_instance, setVar):
+    if raw_instance.__class__.__name__ == "setVar":
         return UISetVarNode(raw_instance)
-    if isinstance(raw_instance, subProcess):
+    if raw_instance.__class__.__name__ == "subProcess":
         return UISubProcess(raw_instance)
-    if isinstance(raw_instance, storeArgs):
+    if raw_instance.__class__.__name__ == "storeArgs":
         return UIStoreArgs(raw_instance)
-    if isinstance(raw_instance, combineArgs):
+    if raw_instance.__class__.__name__ == "combineArgs":
         return UICombineArgs(raw_instance)
-    if isinstance(raw_instance, switch):
+    if raw_instance.__class__.__name__ == "switch":
         return UISwitch(raw_instance)
-    if isinstance(raw_instance, sequence):
+    if raw_instance.__class__.__name__ == "sequence":
         return UISequenceNode(raw_instance)
-    if isinstance(raw_instance, commentNode):
+    if raw_instance.__class__.__name__ == "commentNode":
         return UICommentNode(raw_instance)
-    if isinstance(raw_instance, stickyNote):
+    if raw_instance.__class__.__name__ == "stickyNote":
         return UIStickyNote(raw_instance)
-    if isinstance(raw_instance, reroute) or isinstance(raw_instance, rerouteExecs):
+    if raw_instance.__class__.__name__ == "reroute" or raw_instance.__class__.__name__ == "rerouteExecs":
         return UIRerouteNodeSmall(raw_instance)
-    if isinstance(raw_instance, graphInputs):
+    if raw_instance.__class__.__name__ == "graphInputs":
         return UIGraphInputs(raw_instance)
-    if isinstance(raw_instance, graphOutputs):
+    if raw_instance.__class__.__name__ == "graphOutputs":
         return UIGraphOutputs(raw_instance)
-    if isinstance(raw_instance, compound):
+    if raw_instance.__class__.__name__ == "compound":
         return UICompoundNode(raw_instance)
-    if isinstance(raw_instance, pythonNode):
+    if raw_instance.__class__.__name__ == "pythonNode":
         return UIPythonNode(raw_instance)
-    if isinstance(raw_instance, constant):
+    if raw_instance.__class__.__name__ == "constant":
         return UIConstantNode(raw_instance)
-    if isinstance(raw_instance, convertTo):
+    if raw_instance.__class__.__name__ == "convertTo":
         return UIConvertToNode(raw_instance)
-    if isinstance(raw_instance, makeDict):
+    if raw_instance.__class__.__name__ == "makeDict":
         return UIMakeDictNode(raw_instance)
-    if isinstance(raw_instance, makeAnyDict):
+    if raw_instance.__class__.__name__ == "makeAnyDict":
         return UIMakeDictNode(raw_instance)
-    if isinstance(raw_instance, floatRamp):
+    if raw_instance.__class__.__name__ == "floatRamp":
         return UIFloatRamp(raw_instance)
-    if isinstance(raw_instance, colorRamp):
+    if raw_instance.__class__.__name__ == "colorRamp":
         return UIColorRamp(raw_instance)
-    if isinstance(raw_instance, imageDisplay):
+    if raw_instance.__class__.__name__ == "imageDisplay":
         return UIImageDisplayNode(raw_instance)
-    if isinstance(raw_instance, forLoopBegin):
+    if raw_instance.__class__.__name__ == "forLoopBegin":
         return UIForLoopBeginNode(raw_instance)
-    if isinstance(raw_instance, whileLoopBegin):
+    if raw_instance.__class__.__name__ == "whileLoopBegin":
         return UIWhileLoopBeginNode(raw_instance)
     return UINodeBase(raw_instance)

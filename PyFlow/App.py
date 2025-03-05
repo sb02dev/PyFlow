@@ -194,6 +194,10 @@ class PyFlow(QMainWindow):
         saveAsAction.setIcon(QtGui.QIcon(":/save_as_icon.png"))
         saveAsAction.triggered.connect(lambda: self.save(True))
 
+        reloadPackages = fileMenu.addAction("Reload packages")
+        reloadPackages.setIcon(QtGui.QIcon(":/new_file_icon.png"))
+        reloadPackages.triggered.connect(self._clickReloadPackages)
+
         IOMenu = fileMenu.addMenu("Custom IO")
         for packageName, package in GET_PACKAGES().items():
             # exporters
@@ -261,13 +265,13 @@ class PyFlow(QMainWindow):
 
     def onRequestFillProperties(self, propertiesFillDelegate):
         for toolInstance in self._tools:
-            if isinstance(toolInstance, PropertiesTool):
+            if toolInstance.__class__.__name__ == "PropertiesTool":
                 toolInstance.clear()
                 toolInstance.assignPropertiesWidget(propertiesFillDelegate)
 
     def onRequestClearProperties(self):
         for toolInstance in self._tools:
-            if isinstance(toolInstance, PropertiesTool):
+            if toolInstance.__class__.__name__ == "PropertiesTool":
                 toolInstance.clear()
 
     def getToolbar(self):
@@ -633,6 +637,20 @@ class PyFlow(QMainWindow):
         PyFlow.appInstance = None
 
         QMainWindow.closeEvent(self, event)
+
+    def _clickReloadPackages(self):
+        print("Reloading packages")
+        extraPackagePaths = []
+        extraPathsString = ConfigManager().getPrefsValue(
+            "PREFS", "General/ExtraPackageDirs"
+        )
+        if extraPathsString is not None:
+            extraPathsString = extraPathsString.rstrip(";")
+            extraPathsRaw = extraPathsString.split(";")
+            for rawPath in extraPathsRaw:
+                if os.path.exists(rawPath):
+                    extraPackagePaths.append(os.path.normpath(rawPath))
+        INITIALIZE(additionalPackageLocations=extraPackagePaths, software="standalone")        
 
     @staticmethod
     def instance(parent=None, software=""):

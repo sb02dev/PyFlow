@@ -2458,7 +2458,7 @@ class PackageBuilder(QMdiSubWindow):
 
         f.write("# [Class Imports]\n")
         f.write("from collections import OrderedDict\n")
-        f.write("from PyFlow.UI.UIInterfaces import IPackage\n")
+        f.write("from PyFlow.core.PackageBase import PackageBase\n")
 
         f.write("\n")
 
@@ -2580,7 +2580,7 @@ class PackageBuilder(QMdiSubWindow):
         selectedpackage = self.ui.lstPackages.model().index(self.ui.lstPackages.currentIndex().row(), 0).data()
 
         f.write("# [%s Package]\n" % (selectedpackage))
-        f.write("class %s(IPackage):\n" % (selectedpackage))
+        f.write("class %s(PackageBase):\n" % (selectedpackage))
         f.write("    \"\"\"%s package\n"% (selectedpackage))
         f.write("    \"\"\"\n\n")
 

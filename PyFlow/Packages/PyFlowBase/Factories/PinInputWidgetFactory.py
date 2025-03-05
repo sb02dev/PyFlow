@@ -18,7 +18,6 @@
 from qtpy import QtCore
 from qtpy.QtWidgets import *
 
-from PyFlow.Packages.PyFlowBase import PACKAGE_NAME
 from PyFlow import GET_PACKAGES
 from PyFlow.Core.PathsRegistry import PathsRegistry
 from PyFlow.UI.Widgets.EnumComboBox import EnumComboBox
@@ -286,7 +285,7 @@ def getInputWidget(
     # try to find factory in other packages first
     for pkgName, pkg in GET_PACKAGES().items():
         # skip self
-        if pkgName == PACKAGE_NAME:
+        if pkgName == "PyFlowBase":
             continue
 
         try:

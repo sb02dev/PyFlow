@@ -81,8 +81,10 @@ def addLoggingLevel(levelName, levelNum, methodName=None):
     setattr(logging.getLoggerClass(), methodName, logForLevel)
     setattr(logging, methodName, logToRoot)
 
-
-addLoggingLevel("CONSOLEOUTPUT", logging.ERROR + 5)
+try:
+    addLoggingLevel("CONSOLEOUTPUT", logging.ERROR + 5)
+except:
+    pass
 
 
 @SingletonDecorator

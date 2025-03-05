@@ -15,7 +15,6 @@
 
 from copy import copy
 
-from PyFlow.Packages.PyFlowBase import PACKAGE_NAME
 from PyFlow.Core import NodeBase
 from PyFlow.Core.Variable import Variable
 from PyFlow.Core.Common import *
@@ -119,7 +118,7 @@ class getVar(NodeBase):
 
     @staticmethod
     def category():
-        return PACKAGE_NAME
+        return "PyFlowBase"
 
     @staticmethod
     def keywords():

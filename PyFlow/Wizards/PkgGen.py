@@ -20,138 +20,24 @@ from random import choice
 
 from PyFlow import Wizards
 
+def onerror(func, path, exc_info):
+    """
+    Error handler for ``shutil.rmtree``.
 
-def generatePackageInit(
-    packageName,
-    bIncludeClassNode=True,
-    bIncludeFooLib=True,
-    bIncludeUINodeFactory=True,
-    bIncludePin=True,
-    bIncludeUIPinFactory=True,
-    bIncludeTool=True,
-    bIncludeExporter=True,
-    bIncludePinInputWidgetFactory=True,
-    bIncludePrefsWindget=False,
-):
-    result = "PACKAGE_NAME = '{0}'\n\n".format(packageName)
-    result += "from collections import OrderedDict\n"
-    result += "from PyFlow.UI.UIInterfaces import IPackage\n\n"
+    If the error is due to an access error (read only file)
+    it attempts to add write permission and then retries.
 
-    if bIncludePin:
-        result += "# Pins\n"
-        result += "from PyFlow.Packages.{0}.Pins.DemoPin import DemoPin\n\n".format(
-            packageName
-        )
-
-    if bIncludeFooLib:
-        result += "# Function based nodes\n"
-        result += "from PyFlow.Packages.{0}.FunctionLibraries.DemoLib import DemoLib\n\n".format(
-            packageName
-        )
-
-    if bIncludeClassNode:
-        result += "# Class based nodes\n"
-        result += "from PyFlow.Packages.{0}.Nodes.DemoNode import DemoNode\n\n".format(
-            packageName
-        )
-
-    if bIncludeTool:
-        result += "# Tools\n"
-        result += "from PyFlow.Packages.{0}.Tools.DemoShelfTool import DemoShelfTool\n".format(
-            packageName
-        )
-        result += "from PyFlow.Packages.{0}.Tools.DemoDockTool import DemoDockTool\n\n".format(
-            packageName
-        )
-
-    if bIncludeExporter:
-        result += "# Exporters\n"
-        result += "from PyFlow.Packages.{0}.Exporters.DemoExporter import DemoExporter\n\n".format(
-            packageName
-        )
-
-    result += "# Factories\n"
-    if bIncludeUIPinFactory:
-        result += "from PyFlow.Packages.{0}.Factories.UIPinFactory import createUIPin\n".format(
-            packageName
-        )
-
-    if bIncludeUINodeFactory:
-        result += "from PyFlow.Packages.{0}.Factories.UINodeFactory import createUINode\n".format(
-            packageName
-        )
-
-    if bIncludePinInputWidgetFactory:
-        result += "from PyFlow.Packages.{0}.Factories.PinInputWidgetFactory import getInputWidget\n".format(
-            packageName
-        )
-
-    if bIncludePrefsWindget:
-        result += "# Prefs widgets\n"
-        result += "from PyFlow.Packages.{0}.PrefsWidgets.DemoPrefs import DemoPrefs\n".format(
-            packageName
-        )
-
-    result += "\n"
-
-    # TODO: Optimize this. Do not declare containers if feature not enabled
-    result += "_FOO_LIBS = {}\n"
-    result += "_NODES = {}\n"
-    result += "_PINS = {}\n"
-    result += "_TOOLS = OrderedDict()\n"
-    result += "_PREFS_WIDGETS = OrderedDict()\n"
-    result += "_EXPORTERS = OrderedDict()\n\n"
-
-    if bIncludeFooLib:
-        result += """_FOO_LIBS[DemoLib.__name__] = DemoLib(PACKAGE_NAME)\n\n"""
-
-    if bIncludeClassNode:
-        result += """_NODES[DemoNode.__name__] = DemoNode\n\n"""
-
-    if bIncludePin:
-        result += """_PINS[DemoPin.__name__] = DemoPin\n\n"""
-
-    if bIncludeTool:
-        result += """_TOOLS[DemoShelfTool.__name__] = DemoShelfTool\n"""
-        result += """_TOOLS[DemoDockTool.__name__] = DemoDockTool\n\n"""
-
-    if bIncludeExporter:
-        result += """_EXPORTERS[DemoExporter.__name__] = DemoExporter\n\n"""
-
-    if bIncludePrefsWindget:
-        result += """_PREFS_WIDGETS["Demo"] = DemoPrefs\n\n"""
-
-    result += "\nclass {0}(IPackage):\n\tdef __init__(self):\n\t\tsuper({0}, self).__init__()\n\n".format(
-        packageName
-    )
-    result += """\t@staticmethod\n\tdef GetExporters():\n\t\treturn _EXPORTERS\n\n"""
-    result += (
-        """\t@staticmethod\n\tdef GetFunctionLibraries():\n\t\treturn _FOO_LIBS\n\n"""
-    )
-    result += """\t@staticmethod\n\tdef GetNodeClasses():\n\t\treturn _NODES\n\n"""
-    result += """\t@staticmethod\n\tdef GetPinClasses():\n\t\treturn _PINS\n\n"""
-    result += """\t@staticmethod\n\tdef GetToolClasses():\n\t\treturn _TOOLS\n\n"""
-
-    if bIncludeUIPinFactory:
-        result += (
-            """\t@staticmethod\n\tdef UIPinsFactory():\n\t\treturn createUIPin\n\n"""
-        )
-
-    if bIncludeUINodeFactory:
-        result += (
-            """\t@staticmethod\n\tdef UINodesFactory():\n\t\treturn createUINode\n\n"""
-        )
-
-    if bIncludePinInputWidgetFactory:
-        result += """\t@staticmethod\n\tdef PinsInputWidgetFactory():\n\t\treturn getInputWidget\n\n"""
-
-    if bIncludePrefsWindget:
-        result += (
-            """\t@staticmethod\n\tdef PrefsWidgets():\n\t\treturn _PREFS_WIDGETS\n\n"""
-        )
-
-    return result
-
+    If the error is for another reason it re-raises the error.
+    
+    Usage : ``shutil.rmtree(path, onerror=onerror)``
+    """
+    import stat
+    # Is the error an access error?
+    if not os.access(path, os.W_OK):
+        os.chmod(path, stat.S_IWUSR)
+        func(path)
+    else:
+        pass
 
 def generatePackage(
     packageName,
@@ -190,38 +76,21 @@ def generatePackage(
                     pf.write(pyContent)
             os.remove(txtFilePath)
 
-    moduleInitFilePath = os.path.join(newPackagePath, "__init__.py")
-    with open(moduleInitFilePath, "w") as f:
-        f.write(
-            generatePackageInit(
-                packageName,
-                bIncludeClassNode=bIncludeClassNode,
-                bIncludeFooLib=bIncludeFooLib,
-                bIncludeUINodeFactory=bIncludeUINodeFactory,
-                bIncludePin=bIncludePin,
-                bIncludeUIPinFactory=bIncludeUIPinFactory,
-                bIncludeTool=bIncludeTool,
-                bIncludeExporter=bIncludeExporter,
-                bIncludePinInputWidgetFactory=bIncludePinInputWidgetFactory,
-                bIncludePrefsWindget=bIncludePrefsWindget,
-            )
-        )
-
     # remove unneeded directories
     for path, dirs, files in os.walk(newPackagePath):
         dirName = os.path.basename(path)
         if dirName == "Nodes" and not bIncludeClassNode:
-            shutil.rmtree(path)
+            shutil.rmtree(path,ignore_errors=False,onexc=onerror) 
         if dirName == "FunctionLibraries" and not bIncludeFooLib:
-            shutil.rmtree(path)
+            shutil.rmtree(path,ignore_errors=False,onexc=onerror) 
         if dirName == "Pins" and not bIncludePin:
-            shutil.rmtree(path)
+            shutil.rmtree(path,ignore_errors=False,onexc=onerror) 
         if dirName == "Tools" and not bIncludeTool:
-            shutil.rmtree(path)
+            shutil.rmtree(path,ignore_errors=False,onexc=onerror) 
         if dirName == "Exporters" and not bIncludeExporter:
-            shutil.rmtree(path)
+            shutil.rmtree(path,ignore_errors=False,onexc=onerror) 
         if dirName == "PrefsWidgets" and not bIncludePrefsWindget:
-            shutil.rmtree(path)
+            shutil.rmtree(path,ignore_errors=False,onexc=onerror) 
         if dirName == "Factories":
             removedFactoriesCount = 0
 
@@ -236,7 +105,7 @@ def generatePackage(
                 removedFactoriesCount += 1
 
             if removedFactoriesCount == 3:
-                shutil.rmtree(path)
+                shutil.rmtree(path,ignore_errors=False,onexc=onerror)
 
         if dirName == "UI":
             removedUIClasses = 0
@@ -250,4 +119,4 @@ def generatePackage(
                 removedUIClasses += 1
 
             if removedUIClasses == 2:
-                shutil.rmtree(path)
+                shutil.rmtree(path,ignore_errors=False,onexc=onerror)

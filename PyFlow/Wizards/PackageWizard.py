@@ -95,6 +95,9 @@ class PackageWizard(WizardDialogueBase):
         self.bpGotoComponentsDocs.clicked.connect(self.onGotoComponentsDocs)
         self.goToDocsLayout.addWidget(self.bpGotoComponentsDocs)
         self.p2Layout.addWidget(self.goToDocsWidget)
+        self.toogleAll = QCheckBox("Toogle All")
+        self.toogleAll.stateChanged.connect(self.onToogleAll)
+        self.p2Layout.addWidget(self.toogleAll)        
         self.cbIncludeClassNode = QCheckBox("Class node")
         self.cbIncludeClassNode.stateChanged.connect(self.checkIncludeUINodeFactory)
         self.cbIncludeFooLib = QCheckBox("Function library")
@@ -155,6 +158,16 @@ class PackageWizard(WizardDialogueBase):
             + "\n\n**Note**: Output directory should be writable.",
             pageEnterCallback=self.onSelectPackageRootEntered,
         )
+    def onToogleAll(self, state):
+        self.cbIncludeClassNode.setChecked(state)
+        self.cbIncludeFooLib.setChecked(state)
+        self.cbIncludePin.setChecked(state)
+        self.cbIncludeTool.setChecked(state)
+        self.cbIncludeExporter.setChecked(state)
+        self.cbIncludeUINodeFactory.setChecked(state)
+        self.cbUIPinFactory.setChecked(state)
+        self.cbPinInputWidgetFactory.setChecked(state)
+        self.cbPrefsWidget.setChecked(state)
 
     def checkUIPinFactories(self, state):
         checked = self.cbIncludePin.checkState() == QtCore.Qt.Checked
