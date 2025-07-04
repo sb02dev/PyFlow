@@ -390,7 +390,8 @@ class PyFlow(QMainWindow):
     def save(self, save_as=False):
         if save_as:
             name_filter = "Graph files (*.pygraph)"
-            savepath = QFileDialog.getSaveFileName(filter=name_filter)
+            default_name = "untitled" if self.currentFileName is None else self.currentFileName
+            savepath = QFileDialog.getSaveFileName(filter=name_filter, directory=default_name)
             if type(savepath) in [tuple, list]:
                 pth = savepath[0]
             else:
