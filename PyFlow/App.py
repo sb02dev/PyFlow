@@ -403,7 +403,7 @@ class PyFlow(QMainWindow):
         else:
             if self.currentFileName is None:
                 name_filter = "Graph files (*.pygraph)"
-                savepath = QFileDialog.getSaveFileName(filter=name_filter)
+                savepath = QFileDialog.getSaveFileName(filter=name_filter, directory="untitled")
                 if type(savepath) in [tuple, list]:
                     pth = savepath[0]
                 else:
@@ -425,23 +425,24 @@ class PyFlow(QMainWindow):
 
             tempFileName = self.currentFileName.replace(".pygraph", "") + f"-tempfile-{current_time}.pygraph"
 
-            # Open the temp file in 'w+' mode and the target file in 'w' mode
-            with open(tempFileName, "w+") as tempPtr, open(self.currentFileName, "r+") as filePtr:
-                try:
+            try:
+                # save graph in temp file
+                with open(tempFileName, "w+") as tempPtr:
                     saveData = self.graphManager.get().serialize()
                     json.dump(saveData, tempPtr, indent=4)
-                    
-                    # Move the file pointer to the beginning of the temp file before reading
                     tempPtr.seek(0)
-                    filePtr.write(tempPtr.read())
-                    tempPtr.close()
-                    
-                    # If everything goes well, delete the temp file
-                    os.remove(tempFileName)
-                    
-                    print(f"// saved: '{self.currentFileName}'")
-                except Exception as e:
-                    raise RuntimeError(f'JSON serialization failed.\nCould not save file \"{self.currentFileName}\"') from e
+                    content = tempPtr.read()
+                
+                # write content to target file
+                with open(self.currentFileName, "w") as filePtr:
+                    filePtr.write(content)
+                
+                # delete temp file
+                os.remove(tempFileName)
+                
+                print(f"// saved: '{self.currentFileName}'")
+            except Exception as e:
+                raise RuntimeError(f'JSON serialization failed.\nCould not save file \"{self.currentFileName}\"') from e
 
             self.modified = False
             self.updateLabel()
