@@ -194,7 +194,7 @@ class UIPythonNode(UINodeBase):
         super(UIPythonNode, self).kill()
 
     def onEdit(self):
-        editCmd = ConfigManager().getPrefsValue("PREFS", "General/EditorCmd")
+        editCmd = ConfigManager().getPrefsValue("PREFS", "GeneralPreferences/EditorCmd")
         tempFilesDir = self.canvasRef().getApp().getTempDirectory()
 
         if self._filePath == "":

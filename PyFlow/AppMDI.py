@@ -182,7 +182,7 @@ class pyflowChild(QMdiSubWindow):
         if self.currentTempDir == "":
             # create app folder in documents
             # random string used for cases when multiple instances of app are running in the same time
-            tempDirPath = ConfigManager().getPrefsValue("PREFS", "General/TempFilesDir")
+            tempDirPath = ConfigManager().getPrefsValue("PREFS", "GeneralPreferences/TempFilesDir")
             if tempDirPath[-1:] in ('/', '\\'):
                 tempDirPath = tempDirPath[:-1]
             self.currentTempDir = "{0}_{1}".format(tempDirPath, generateRandomString())
@@ -367,7 +367,7 @@ class pyflowChild(QMdiSubWindow):
 
         try:
             extraPackagePaths = []
-            extraPathsString = ConfigManager().getPrefsValue("PREFS", "General/ExtraPackageDirs")
+            extraPathsString = ConfigManager().getPrefsValue("PREFS", "GeneralPreferences/ExtraPackageDirs")
             if extraPathsString is not None:
                 extraPathsString = extraPathsString.rstrip(";")
                 extraPathsRaw = extraPathsString.split(";")

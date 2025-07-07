@@ -52,7 +52,7 @@ class EditorHistory(object):
         self.stack = list()
         try:
             self._capacity = int(
-                ConfigManager().getPrefsValue("PREFS", "General/HistoryDepth")
+                ConfigManager().getPrefsValue("PREFS", "GeneralPreferences/HistoryDepth")
             )
         except:
             self._capacity = 10

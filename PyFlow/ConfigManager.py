@@ -55,7 +55,7 @@ class ConfigManager(object):
     @staticmethod
     def shouldRedirectOutput():
         return (
-            ConfigManager().getPrefsValue("PREFS", "General/RedirectOutput") == "true"
+            ConfigManager().getPrefsValue("PREFS", "GeneralPreferences/RedirectOutput") == "true"
         )
 
     def registerConfigFile(self, alias, absPath):

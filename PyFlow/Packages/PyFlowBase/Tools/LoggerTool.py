@@ -265,7 +265,7 @@ class LoggerTool(DockTool):
     def anchorClickedMethod(self, url):
 
         if os.path.exists(url.url().split("::")[0]):
-            editCmd = ConfigManager().getPrefsValue("PREFS", "General/EditorCmd")
+            editCmd = ConfigManager().getPrefsValue("PREFS", "GeneralPreferences/EditorCmd")
             editCmd = editCmd.replace("@FILE", url.url().replace("::", ":"))
             subprocess.Popen(editCmd)
         else:

@@ -206,11 +206,9 @@ def INITIALIZE(additionalPackageLocations=None, software=""):
 
     for packagePathId in range(len(additionalPackageLocations)):
         packagePath = additionalPackageLocations[packagePathId]
-        packagePath = ensurePackagePath(packagePath)
-        additionalPackageLocations[packagePathId] = packagePath
-
-    packagePaths.extend(additionalPackageLocations)
-
+        paths = recursePackagePaths(packagePath)
+        packagePaths.extend(paths)
+    
     for importer, modname, ispkg in pkgutil.iter_modules(packagePaths):
         try:
             if ispkg:
