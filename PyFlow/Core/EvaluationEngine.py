@@ -62,22 +62,31 @@ class DefaultEvaluationEngine_Impl(IEvaluationEngine):
     @staticmethod
     def getEvaluationOrderIterative(node, forward=False):
         visited = set()
-        stack = [node]
         order = []
-        while len(stack):
-            node = stack[-1]
-            stack.pop()
+        stack = [(node, False)]  # (node, expanded)
 
-            if node not in visited:
-                order.insert(0, node)
-                visited.add(node)
-            if not forward:
-                lhsNodes = DefaultEvaluationEngine_Impl().getNextLayerNodes(node)
-            else:
-                lhsNodes = DefaultEvaluationEngine_Impl().getForwardNextLayerNodes(node)
-            for n in lhsNodes:
-                if n not in visited:
-                    stack.append(n)
+        engine = DefaultEvaluationEngine_Impl()
+
+        while stack:
+            current, expanded = stack.pop()
+
+            if current in visited:
+                continue
+
+            if expanded: # We are revisiting the node after visiting its dependencies
+                visited.add(current)
+                order.append(current)
+            else: # First visit: push node back with expanded=True
+                stack.append((current, True))
+                if forward:
+                    neighbors = engine.getForwardNextLayerNodes(current)
+                else:
+                    neighbors = engine.getNextLayerNodes(current)
+
+                for n in neighbors:
+                    if n not in visited:
+                        stack.append((n, False))
+
         order.pop()
         return order
 
