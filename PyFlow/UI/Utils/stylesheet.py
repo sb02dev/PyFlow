@@ -99,7 +99,7 @@ class editableStyleSheet:
         self.presets = {}
         self.loadPresets(THEMES_PATH)
         try:
-            themeName = ConfigManager().getPrefsValue("PREFS", "Theme/Theme_Name")
+            themeName = ConfigManager().getPrefsValue("PREFS", "ThemePreferences/Theme_Name")
             if themeName:
                 self.loadFromData(self.presets[themeName])
             else:
