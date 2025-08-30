@@ -92,17 +92,14 @@ class UIStickyNote(UINodeBase):
 
     def startEditing(self):
         self.textInput.setPlainText(
-            bytes(self.NonFormatedText, "utf-8").decode("unicode-escape")
+            self.NonFormatedText.replace('<br/>', '\n')
         )
 
     def editingFinished(self, succes):
         if succes:
-            self.NonFormatedText = self.textInput.toPlainText().encode(
-                "unicode-escape"
+            self.NonFormatedText = self.textInput.toPlainText().replace(
+                "\n", "<br/>"
             )
-            self.NonFormatedText = self.NonFormatedText.replace(
-                b"\\n", b"<br/>"
-            ).decode("unicode-escape")
             self.textInput.setHtml(self.NonFormatedText)
 
     def updateSize(self):
