@@ -289,11 +289,12 @@ def getInputWidget(
             continue
 
         try:
-            widget = pkg.PinsInputWidgetFactory()(
-                dataType, dataSetter, defaultValue, widgetVariant=widgetVariant, **kwds
-            )
-            if widget is not None:
-                return widget
+            if pkg.PinsInputWidgetFactory() is not None:
+                widget = pkg.PinsInputWidgetFactory()(
+                    dataType, dataSetter, defaultValue, widgetVariant=widgetVariant, **kwds
+                )
+                if widget is not None:
+                    return widget
         except Exception as e:
             print(
                 "Failed to override input widget.{0} Package - {1}".format(
