@@ -181,5 +181,5 @@ class PackageBase(object):
         :rtype: dict[str, class]
         """
         if custom_type not in self._CUSTOM_PLUGIN_CLASSES:
-            return None
+            return {}
         return self._CUSTOM_PLUGIN_CLASSES[custom_type]
