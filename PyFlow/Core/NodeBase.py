@@ -866,8 +866,10 @@ class NodeBase(INode):
         raw_inst.compute = MethodType(compute, raw_inst)
 
         raw_inst._nodeMetaData = meta
-        if "CacheEnabled" in meta:
-            raw_inst.bCacheEnabled = meta["CacheEnabled"]
+        if NodeMeta.CACHE_ENABLED in meta:
+            raw_inst.bCacheEnabled = meta[NodeMeta.CACHE_ENABLED]
+        if NodeMeta.HEADER_COLOR in meta:
+            raw_inst.headerColor = meta[NodeMeta.HEADER_COLOR]
 
         # create execs if callable
         if nodeType == NodeTypes.Callable:

@@ -1023,3 +1023,4 @@ class NodeMeta:
     CATEGORY = "Category"
     KEYWORDS = "Keywords"
     CACHE_ENABLED = "CacheEnabled"
+    HEADER_COLOR = "HeaderColor"
